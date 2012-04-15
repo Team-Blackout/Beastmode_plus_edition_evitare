@@ -3108,14 +3108,12 @@ static int synaptics_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 		enable_irq_wake(client->irq);
 	}
 #endif
-
 	printk(KERN_INFO "[TP] %s: enter\n", __func__);
 
 	if (ts->use_irq) {
-	  
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
 		if (s2w_switch == 0) {
-#endif
+#endif	  
 		disable_irq(client->irq);
 		ts->irq_enabled = 0;
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
@@ -3124,6 +3122,12 @@ static int synaptics_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 	} else {
 		hrtimer_cancel(&ts->timer);
 		ret = cancel_work_sync(&ts->work);
+#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
+	if (s2w_switch == 0) {
+		if (ret && ts->use_irq) /* if work was pending disable-count is now 2 */
+			enable_irq(client->irq);
+	}
+#endif
 	}
 
 	if(ts->psensor_detection) {
@@ -3216,22 +3220,15 @@ static int synaptics_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 	}
 	else if(ts->psensor_detection)
 		ts->psensor_phone_enable = 1;
-#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
-	if (s2w_switch == 0) {
-		if (ret && ts->use_irq) /* if work was pending disable-count is now 2 */
-			enable_irq(client->irq);
-	}
-#endif
+	
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
 	if (s2w_switch == 0) {
 #endif
+	
 #ifdef SYN_SUSPEND_RESUME_POWEROFF
 	if (ts->power)
 		ts->power(0);
 	else
-#endif
-#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
-	}
 #endif	
 {
 		if (ts->psensor_status > 0) {
@@ -3246,6 +3243,9 @@ static int synaptics_ts_suspend(struct i2c_client *client, pm_message_t mesg)
 				i2c_syn_error_handler(ts, ts->i2c_err_handler_en, "sleep: 0x01", __func__);
 		}
 	}
+#ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
+	}
+#endif
 	return 0;
 }
 
@@ -3261,10 +3261,10 @@ static int synaptics_ts_resume(struct i2c_client *client)
         }
 #endif
 	printk(KERN_INFO "[TP] %s: enter\n", __func__);
+
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
 	if (s2w_switch == 0) {
 #endif
-
 #ifdef SYN_SUSPEND_RESUME_POWEROFF
 	if (ts->power) {
 		ts->power(1);
@@ -3320,7 +3320,7 @@ static int synaptics_ts_resume(struct i2c_client *client)
 	else
 		hrtimer_start(&ts->timer, ktime_set(1, 0), HRTIMER_MODE_REL);
 #ifdef CONFIG_TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
-	if (s2w_switch == 0) {
+	}
 #endif
 	return 0;
 }

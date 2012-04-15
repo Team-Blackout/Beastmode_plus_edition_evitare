@@ -767,5 +767,9 @@ config TOUCHSCREEN_SYNAPTICS_3k
 	  If unsure, say Y.
 
 	  To compile this driver as a module, choose M here.
+	  
+config TOUCHSCREEN_SYNAPTICS_SWEEP2WAKE
+        tristate "Sweep2Wake for SYNAPTICS_3k based touchscreens"
+        default y
 
 endif
