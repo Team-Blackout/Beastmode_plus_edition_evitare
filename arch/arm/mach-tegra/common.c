@@ -1166,9 +1166,30 @@ void cpufreq_save_governor(void)
 
 void cpufreq_restore_governor(void)
 {
+	int cpu_process_id = tegra_cpu_process_id();
+
 	cpufreq_set_governor(cpufreq_gov_default);
 
 	if (strncmp(cpufreq_gov_default,INTERACTIVE_GOVERNOR,
+#ifdef CONFIG_TEGRA3_VARIANT_CPU_OVERCLOCK
+		switch (cpu_process_id) {
+			case 3:
+				set_sysfs_param("/sys/devices/system/cpu/cpu0/cpufreq/",
+					"scaling_max_freq", CPUFREQ_SCALING_MAX_FREQ_V3);
+				break;
+			case 2:
+				set_sysfs_param("/sys/devices/system/cpu/cpu0/cpufreq/",
+					"scaling_max_freq", CPUFREQ_SCALING_MAX_FREQ_V2);
+			case 1:
+				break;
+			case 0:
+			default:
+				set_sysfs_param("/sys/devices/system/cpu/cpu0/cpufreq/",
+					"scaling_max_freq", CPUFREQ_SCALING_MAX_FREQ);
+				break;
+		}
+#else
+#endif
 				strlen(INTERACTIVE_GOVERNOR)) == 0) {
 		set_governor_param(INTERACTIVE_GOVERNOR, BOOST_FACTOR,
 					saved_boost_factor);
