@@ -87,6 +87,7 @@ else
 obj-$(CONFIG_ARCH_TEGRA_3x_SOC)         += cpu-tegra3.o
 endif
 ifeq ($(CONFIG_TEGRA_MPDECISION),y)
+endif
 obj-$(CONFIG_ARCH_TEGRA_3x_SOC)         += tegra_mpdecision.o
 endif
 obj-$(CONFIG_TEGRA_PCI)                 += pcie.o
