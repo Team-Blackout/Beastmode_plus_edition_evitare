@@ -35,6 +35,9 @@ modules.builtin
 *.bak
 *.img
 *.gz
+*.xzkern
+*.rej
+*.bak
 
 
 #
