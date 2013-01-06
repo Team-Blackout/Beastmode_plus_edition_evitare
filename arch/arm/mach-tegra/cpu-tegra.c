@@ -49,6 +49,8 @@
 #include "cpu-tegra.h"
 #include "dvfs.h"
 #include "pm.h"
+
+extern unsigned int get_powersave_freq();
 /* Symbol to store resume resume */
 extern unsigned long long wake_reason_resume;
 static spinlock_t user_cap_lock;
@@ -544,8 +546,6 @@ int tegra_update_cpu_speed(unsigned long rate)
 	int ret = 0;
 	struct cpufreq_freqs freqs;
         unsigned long rate_save = rate;
-
-	unsigned long rate_save = rate;
 	int orig_nice = 0;
 	freqs.old = tegra_getspeed(0);
 	freqs.new = rate;
