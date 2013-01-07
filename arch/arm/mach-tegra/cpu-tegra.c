@@ -544,6 +544,7 @@ int tegra_update_cpu_speed(unsigned long rate)
 
 	unsigned long rate_save = rate;
 	int orig_nice = 0;
+	int status = 0;
 	freqs.old = tegra_getspeed(0);
 	freqs.new = rate;
 

@@ -504,8 +504,7 @@ config TEGRA_CLUSTER_CONTROL
 
 config TEGRA_AUTO_HOTPLUG
 	bool "Enable automatic CPU hot-plugging"
-	depends on HOTPLUG_CPU && CPU_FREQ && !ARCH_CPU_PROBE_RELEASE && !ARCH_TEGRA_2x_SOC
-	default n
+	default y
 	help
 	  This option enables turning CPUs off/on and switching tegra
 	  high/low power CPU clusters automatically, corresponding to
@@ -513,7 +512,6 @@ config TEGRA_AUTO_HOTPLUG
 
 config TEGRA_MPDECISION
         bool "Enable better automatic CPU hot-plugging"
-	depends on HOTPLUG_CPU && CPU_FREQ && !ARCH_CPU_PROBE_RELEASE && !ARCH_TEGRA_2x_SOC && !TEGRA_AUTO_HOTPLUG
 	default y
 	help
 	  This option enables turning CPUs off/on and switching tegra
