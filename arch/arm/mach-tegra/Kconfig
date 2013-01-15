@@ -858,3 +858,10 @@ config SENSE_4_PLUS
 config MEMORY_FOOTPRINT_DEBUGGING
 	bool "footprint for debugging"
 	default n
+
+	  
+config TEGRA3_VARIANT_CPU_OVERCLOCK
+    bool "CPU Overclocking"
+    default n
+    help
+      CPU Overclocking option
